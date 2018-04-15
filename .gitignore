@@ -6,3 +6,4 @@ logs/
 debug.bat
 _draft/
 _old/
+*.json
