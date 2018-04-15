@@ -54,6 +54,9 @@ var _asset_extensions = {
 
 func _ready():
 	set_process(false)
+
+
+func run():
 	_calculate_stats()
 
 
@@ -79,7 +82,7 @@ func get_data():
 
 
 func _process(delta):
-	print("Processing...")
+	#print("Processing...")
 	var time_before = OS.get_ticks_msec()
 	while OS.get_ticks_msec() - time_before < TIME_SLICE_DURATION_MS:
 		emit_signal("_internal_process")
@@ -170,14 +173,14 @@ func _scan_dirs_recursively(root, out_files, out_dirs):
 
 		for i in range(prev_dir_count, dir_count):
 			dirs_to_scan.append(out_dirs[i])
-
+		
 		yield(self, "_internal_process")
 
 	emit_signal("_file_cache_updated")
 
 
 func _scan_dir(root, out_files, out_dirs):
-	print("Scanning ", root)
+	#print("Scanning ", root)
 
 	var dir = Directory.new()
 	var err = dir.change_dir(root)

@@ -1,6 +1,8 @@
 tool
 extends EditorPlugin
 
+const SAVE_PATH = "res://addons/zylann.project_stats/data"
+
 const Analyzer = preload("analyzer.gd")
 var Window = load("res://addons/zylann.project_stats/window.tscn")
 
@@ -31,10 +33,41 @@ func _enter_tree():
 	menu_button.get_popup().connect("id_pressed", self, "_on_menu_id_pressed")
 	add_control_to_container(CONTAINER_TOOLBAR, menu_button)
 	
-	#_analyzer.run()
+	_analyzer.connect("scan_completed", self, "_on_analyzer_scan_completed")
+	_analyzer.call_deferred("run")
 
 
 func _on_menu_id_pressed(id):
 	if id == MENU_SHOW:
 		_window.popup_centered_minsize()
+
+
+func _on_analyzer_scan_completed():
+	var save_path = get_current_save_path()
+	var f = File.new()
+	if not f.file_exists(save_path):
+		var data = _analyzer.get_data()
+		save_data(save_path, data)
+
+
+func save_data(fpath, data):
+	var json = JSON.print(data, "\t")
+	var f = File.new()
+	var err = f.open(fpath, File.WRITE)
+	if err != OK:
+		print("ERROR: cannot write file '", fpath, "'")
+		return
+	f.store_string(json)
+	f.close()
+	print("Saved ", fpath)
+
+
+func get_current_save_path():
+	# Files are saved on per hour basis
+	var datetime = OS.get_datetime()
+	var s = "project_stats_" + str(datetime.year) \
+		+ "_" + str(datetime.month) \
+		+ "_" + str(datetime.day) \
+		+ "_" + str(datetime.hour) + "_00.json"
+	return SAVE_PATH.plus_file(s)
 
