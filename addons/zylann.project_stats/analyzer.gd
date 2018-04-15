@@ -10,6 +10,7 @@ signal _file_cache_updated
 signal _loc_updated
 
 var _lines_of_code = 0
+var _loc_per_type = {}
 var _asset_counts = {}
 
 var _asset_types = [
@@ -22,6 +23,17 @@ var _asset_types = [
 	"other_resources"
 ]
 
+var _script_types = {
+	"gd": "gdscript",
+	"cs": "csharp",
+	"c": "cpp",
+	"cpp": "cpp",
+	"h": "cpp",
+	"hpp": "cpp",
+	"py": "python",
+	"shader": "shader"
+}
+
 var _asset_extensions = {
 	"gd": "script",
 	"cs": "script",
@@ -29,6 +41,7 @@ var _asset_extensions = {
 	"cpp": "script",
 	"h": "script",
 	"py": "script",
+	"shader": "script",
 
 	"png": "texture",
 	"bmp": "texture",
@@ -74,7 +87,7 @@ func get_loc():
 
 func get_data():
 	var data = {}
-	data["lines_of_code"] = _lines_of_code
+	data["lines_of_code"] = _loc_per_type
 	for type in _asset_counts:
 		var count = _asset_counts[type]
 		data[type] = count
@@ -122,20 +135,28 @@ func _count_asset_types(file_paths):
 
 
 func _calculate_lines_of_code(file_paths):
-	var loc = 0
+	var total_loc = 0
 
 	for i in range(len(file_paths)):
 		var file_path = file_paths[i]
 
 		var ext = file_path.get_extension()
-		if _asset_extensions.has(ext) and _asset_extensions[ext] == "script":
-			loc += _count_lines(file_path)
+		if _script_types.has(ext):
+			
+			var loc = _count_lines(file_path)
+			total_loc += loc
+		
+			var script_type = _script_types[ext]
+			if _loc_per_type.has(script_type):
+				_loc_per_type[script_type] += loc
+			else:
+				_loc_per_type[script_type] = loc
 
 		yield(self, "_internal_process")
 
-	_lines_of_code = loc
+	_lines_of_code = total_loc
 
-	print("LOC: ", loc)
+	print("LOC: ", total_loc, ", ", _loc_per_type)
 	emit_signal("_loc_updated")
 
 

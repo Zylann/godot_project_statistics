@@ -8,10 +8,6 @@ var _analyzer = null
 var _count_labels = {}
 
 
-func _ready():
-	pass
-
-
 func set_analyzer(analyzer):
 	if _analyzer == analyzer:
 		return
@@ -43,6 +39,12 @@ func refresh():
 	var data = _analyzer.get_data()
 	
 	for name in data:
-		_item_list.add_item(name.capitalize())
-		_item_list.add_item(str(data[name]))
+		var v = data[name]
+		if typeof(v) == TYPE_DICTIONARY:
+			for k in v:
+				_item_list.add_item((name + ": " + str(k)).capitalize())
+				_item_list.add_item(str(v[k]))
+		else:
+			_item_list.add_item(name.capitalize())
+			_item_list.add_item(str(data[name]))
 		
