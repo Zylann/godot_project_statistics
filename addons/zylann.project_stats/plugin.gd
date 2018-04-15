@@ -16,6 +16,7 @@ func _enter_tree():
 	print("EditorPlugin enter tree")
 	
 	_window = Window.instance()
+	_window.set_data_dir(SAVE_PATH)
 	get_editor_interface().get_base_control().add_child(_window)
 	
 	_analyzer = Analyzer.new()
