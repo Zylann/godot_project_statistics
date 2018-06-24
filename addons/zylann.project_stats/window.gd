@@ -135,7 +135,7 @@ func load_history(data_dir):
 	dir.list_dir_end()
 
 	if len(history) == 0:
-		print("No data files found, cannot build graph")
+		print("No data files found, cannot build graph for Project Statistics")
 		return
 	
 	history.sort_custom(self, "_history_sorter")

@@ -116,7 +116,7 @@ func _calculate_stats():
 	_count_asset_types(files)
 
 	set_process(false)
-	print("Done")
+	#print("Done")
 	emit_signal("scan_completed")
 
 
@@ -131,7 +131,7 @@ func _count_asset_types(file_paths):
 			var asset_type = _asset_extensions[ext]
 			_asset_counts[asset_type] += 1
 
-	print(_asset_counts)
+	#print(_asset_counts)
 
 
 func _calculate_lines_of_code(file_paths):
@@ -156,12 +156,12 @@ func _calculate_lines_of_code(file_paths):
 
 	_lines_of_code = total_loc
 
-	print("LOC: ", total_loc, ", ", _loc_per_type)
+	#print("LOC: ", total_loc, ", ", _loc_per_type)
 	emit_signal("_loc_updated")
 
 
 func _count_lines(file_path):
-	print("Counting lines in ", file_path)
+	#print("Counting lines in ", file_path)
 
 	var f = File.new()
 	var err = f.open(file_path, File.READ)

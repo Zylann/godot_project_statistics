@@ -13,7 +13,7 @@ var _window = null
 
 
 func _enter_tree():
-	print("EditorPlugin enter tree")
+	#print("EditorPlugin enter tree")
 	
 	_window = Window.instance()
 	_window.set_data_dir(SAVE_PATH)
@@ -60,7 +60,7 @@ func save_data(fpath, data):
 		return
 	f.store_string(json)
 	f.close()
-	print("Saved ", fpath)
+	#print("Saved ", fpath)
 
 
 func get_current_save_path():
