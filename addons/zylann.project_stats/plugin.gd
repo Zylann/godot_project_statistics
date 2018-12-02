@@ -10,11 +10,10 @@ const MENU_SHOW = 0
 
 var _analyzer = null
 var _window = null
+var _menu_button = null
 
 
 func _enter_tree():
-	#print("EditorPlugin enter tree")
-	
 	_window = Window.instance()
 	_window.set_data_dir(SAVE_PATH)
 	get_editor_interface().get_base_control().add_child(_window)
@@ -28,14 +27,22 @@ func _enter_tree():
 #	menu.add_item("Show", MENU_SHOW)
 #	menu.connect("id_pressed", self, "_on_menu_id_pressed")
 #	add_tool_submenu_item("Project statistics", menu)
-	var menu_button = MenuButton.new()
-	menu_button.text = "Project statistics"
-	menu_button.get_popup().add_item("Show", MENU_SHOW)
-	menu_button.get_popup().connect("id_pressed", self, "_on_menu_id_pressed")
-	add_control_to_container(CONTAINER_TOOLBAR, menu_button)
+	_menu_button = MenuButton.new()
+	_menu_button.text = "Project statistics"
+	_menu_button.get_popup().add_item("Show", MENU_SHOW)
+	_menu_button.get_popup().connect("id_pressed", self, "_on_menu_id_pressed")
+	add_control_to_container(CONTAINER_TOOLBAR, _menu_button)
 	
 	_analyzer.connect("scan_completed", self, "_on_analyzer_scan_completed")
 	_analyzer.call_deferred("run")
+
+
+func _exit_tree():
+	_menu_button.queue_free()
+	_menu_button = null
+	
+	_window.queue_free()
+	_window = null
 
 
 func _on_menu_id_pressed(id):
